@@ -1,0 +1,51 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  web:
+    container_name: web
+    image: my-app
+    build:
+      context: .
+      dockerfile: ./Dockerfiles/Dockerfile
+    command: ./init.sh
+    environment:
+      - DATABASE_URL=postgresql://knh:knh1!@db:5432/knh
+    depends_on:
+      - db
+    # volumes:
+    #   - ./app:/app
+    expose:
+      - 8000
+    labels:
+      - "traefik.enable=true" # enables Traefik to discover the service
+      - "traefik.http.routers.fastapi.rule=Host(`fastapi.localhost`)" # redirect
+
+  db:
+    container_name: db
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=knh
+      - POSTGRES_PASSWORD=knh1!
+      - POSTGRES_DB=knh
+
+  traefik:
+    image: traefik:v2.9.6
+    ports:
+      - 8000:80
+      - 8081:8080
+    volumes:
+      # maps the local config file to the config file in the container so that the settings are kept in sync
+      - "./traefik/traefik.dev.toml:/etc/traefik/traefik.toml"
+      # enables Traefik to discover other containers
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+volumes:
+  postgres_data:

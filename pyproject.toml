@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "fastapi-postgresql-traefik"
+version = "0.1.0"
+description = ""
+authors = ["nahoon kang <ejrtks102020@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.6"
+fastapi = "^0.104.1"
+uvicorn = "^0.24.0"
+ormar = "^0.12.2"
+asyncpg = "^0.29.0"
+psycopg2-binary = "^2.9.9"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
